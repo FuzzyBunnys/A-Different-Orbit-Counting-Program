@@ -1,0 +1,160 @@
+# Collatz Program in Python
+# would like to turn on the python linter for Anaconda, but not sure how to do that atm
+# NAF function
+def NAF(x):
+    if x == 0:
+        return[]
+
+    z = 0 if x % 2 == 0 else 2 - (x % 4)
+
+    return NAF((x - z) // 2) + [z]
+
+
+# arrayaccess variables
+onepos = 0
+twopos = 0
+threepos = 0
+fourpos = 0
+fivepos = 0
+sixpos = 0
+sevenpos = 0
+eightpos = 0
+ninepos = 0
+tenpos = 0
+elevenpos = 0
+twelvepos = 0
+# declare our storage arrays
+numbers = {
+    0: {1: 0}  # just storing ints
+}
+
+# lets do two dictionaries one for even one for odd
+
+evendivcounts = {
+    3: {1: 0}  # storing an array of ints, key corresponds to the value of the feed number for the string of divisions by 2
+}
+# so yes this will work, for every number I'll have a corresponding element in my even div counts dictionary
+
+maxoddcount = 0
+
+for dictnumber in range(1, 50, 1):  # make 50 arrays, is that enough?
+    # this should be done as a dictionary
+    # it'll have a single element that's an int
+    # can add new ints as needed
+    numbers[dictnumber] = {}  # setup our 51 arrays
+
+for evenadd in range(5, 1000001, 2):  # make all the storage arrays for our odd numbers
+    evendivcounts[evenadd] = {}
+
+
+for oddnumber in range(3, 1000001, 2):
+    oddcounter = 0
+    evencounter = 0
+    originalnum = oddnumber
+
+    while oddnumber >= 3:  # here's our collatz loop
+
+        if((oddnumber % 2) == 0):  # if we're even divide by two
+            oddnumber = oddnumber / 2
+            evencounter += 1  # soo we've incremented the even counter
+            # i want to write over the element
+            evendivcounts[originalnum][oddcounter] = evencounter
+
+        else:  # otherwise we're odd
+            oddnumber = oddnumber * 3 + 1
+            oddcounter += 1  # track our odd steps
+            evencounter = 0	 # if we're odd we need to reset the even count
+
+    if oddcounter > maxoddcount:
+        maxoddcount = oddcounter  # current max is 96
+
+    # will have some arrays that sort by oddcount numbers
+    # need a better way of iterating through and doing this, current if else tree is annoying
+    if(oddcounter == 1):
+        # place element at current open spot of dictionary
+        numbers[1][onepos] = originalnum
+        onepos += 1  # increment access counter
+        # could write a function that does this, will need to modify the dictionary as well
+        # setup an array element in the dictionary for each number
+
+    elif(oddcounter == 2):
+        numbers[2][twopos] = originalnum
+        twopos += 1
+
+    elif(oddcounter == 3):
+
+        numbers[3][threepos] = originalnum
+        threepos += 1
+
+    elif(oddcounter == 4):
+        numbers[4][fourpos] = originalnum
+        fourpos += 1
+
+    elif(oddcounter == 5):
+        numbers[5][fivepos] = originalnum
+        fivepos += 1
+
+    elif(oddcounter == 6):
+        numbers[6][sixpos] = originalnum
+        sixpos += 1
+
+    elif(oddcounter == 7):
+        numbers[7][sevenpos] = originalnum
+        sevenpos += 1
+
+    elif(oddcounter == 8):
+        numbers[8][eightpos] = originalnum
+        eightpos += 1
+
+    elif(oddcounter == 9):
+        numbers[9][ninepos] = originalnum
+        ninepos += 1
+
+    elif(oddcounter == 10):
+        numbers[10][tenpos] = originalnum
+        tenpos += 1
+
+    elif(oddcounter == 11):
+        numbers[11][elevenpos] = originalnum
+        elevenpos += 1
+
+# code builds successfully to this point
+# note that there doesn't appear to be a number with 12 odd iterations in collatz between 3 and 10001
+print("MAX ODD COUNT =", maxoddcount)
+
+# next step is figuring out how to sort the elements in my dictionary
+# what if i just print it out?
+
+
+for oddcollatz in range(1, 51):
+    print("Odd Steps =", oddcollatz)
+    print("DECIMAL		BINARY    NAF				EVEN DIV SEQUENCE")
+
+    # should check the length of a dictionary for the elements len(numbers[range])
+    for dictionaryelement in range(0, len(numbers[oddcollatz])):
+        print('{:5d}'.format(numbers[oddcollatz][dictionaryelement]),  # first print int value
+              '{0:14b}'.format(numbers[oddcollatz]
+                               [dictionaryelement]),  # then binary
+              NAF(numbers[oddcollatz][dictionaryelement]), "		",  # then NAF
+              evendivcounts[numbers[oddcollatz][dictionaryelement]])  # then even div pattern
+
+        # need to improve formatting, want to center columns,
+
+        # currently this program encodes most of my understanding of the Collatz Conjecture
+        # I'm convinced there's a structure, I'm convinced that the structure is not modified in any way function
+        # such that it can grow without bound or repeat in a cycle other than 4,2,1. I do not have the math tools to
+        # add to it at the moment though. I believe investigating topics such as universality, random matrices, pseudorandomness, polynomial
+        # representations of numbers, and category theory might prove useful, but at the moment I don't have a way of grappling with the structure I cannot
+        # see. I gotta learn more math.
+
+        # an easy addition to this program would be a way of calculating the number in different bases for each value, already sort of doing that with
+        # binary and NAF
+        # the bailey borwein plouffe formula for PI is also interesting,
+        # it provides an implementation of the PSLQ integer relation algorithm
+
+        # would benford's law be of any use? its a law about how often numbers appear in datasets
+
+        # with regards to the base idea, i'm looking for a similar 10101 pattern i found in binary, i know 111000111 exists is the same if we have 2 odd
+        # steps, maybe if I search in base 8 for the second odd step? 707070707, what would the third pattern be?
+# So next I want to check if a number ever leaves it's initial odd step group
+# I need to check that after I've calculated everything. So I can rerun collatz, and check the sequence the group is in at each odd step? 
